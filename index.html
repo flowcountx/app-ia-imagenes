@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" class="dark"> <!-- Por defecto, iniciamos en modo oscuro -->
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asistente de Imágenes con IA</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Incluimos la librería de Puter JS. ¡Esto es clave! -->
     <script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
@@ -18,10 +17,19 @@
     </header>
 
     <main>
-        <div class="controls">
-            <input type="file" id="image-input" accept="image/*" multiple>
-            <button id="process-btn">Procesar Imágenes</button>
-            <button id="clear-btn">Limpiar Todo</button>
+        <!-- NUEVA ZONA DE ARRASTRAR Y SOLTAR -->
+        <div id="drop-zone">
+            <p>Arrastra y suelta tus imágenes aquí o</p>
+            <label for="image-input" class="file-label">Selecciona archivos</label>
+            <input type="file" id="image-input" accept="image/*" multiple hidden>
+        </div>
+
+        <!-- NUEVO CONTENEDOR PARA LA LISTA DE ARCHIVOS -->
+        <div id="file-list-container">
+            <h3>Imágenes Cargadas:</h3>
+            <ul id="file-list">
+                <!-- Los nombres de los archivos aparecerán aquí -->
+            </ul>
         </div>
 
         <div class="actions">
@@ -30,7 +38,14 @@
                 <option value="describe">2. Describir Imagen</option>
                 <option value="custom">3. Instrucción Personalizada</option>
             </select>
+            <!-- El textarea para la instrucción ahora estará oculto por defecto -->
             <textarea id="custom-instruction" placeholder="Escribe tu instrucción aquí (ej: resume el texto, traduce al inglés, etc.)"></textarea>
+        </div>
+        
+        <div class="controls">
+             <!-- Movimos los botones aquí para un mejor flujo -->
+            <button id="process-btn">Procesar Imágenes</button>
+            <button id="clear-btn">Limpiar Todo</button>
         </div>
 
         <div id="results-container">

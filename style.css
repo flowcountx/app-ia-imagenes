@@ -227,3 +227,67 @@ select {
         grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
     }
 }
+/* ------------------- */
+/*  8. Estilos Adicionales (Drag & Drop y Lista de Archivos)
+/* ------------------- */
+
+#drop-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    background-color: var(--surface-bg-color);
+    transition: border-color 0.3s, background-color 0.3s;
+    margin-bottom: 20px;
+}
+
+#drop-zone p {
+    margin: 0 0 10px 0;
+}
+
+.file-label {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#drop-zone.drag-over {
+    border-color: var(--primary-color);
+    background-color: var(--bg-color);
+}
+
+#file-list-container {
+    background-color: var(--surface-bg-color);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#file-list-container h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+#file-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#file-list li {
+    padding: 5px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#file-list li:last-child {
+    border-bottom: none;
+}
+
+/* Ocultar el textarea por defecto */
+#custom-instruction {
+    display: none;
+}
