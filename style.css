@@ -1,0 +1,229 @@
+/* ------------------- */
+/*  1. Variables de Tema (Modo Oscuro y Claro)
+/* ------------------- */
+
+/* Por defecto, usamos las variables del modo oscuro */
+:root {
+    --bg-color: #121212; /* Un negro no tan puro para el fondo */
+    --surface-bg-color: #1e1e1e; /* Color para tarjetas y contenedores */
+    --text-color: #e0e0e0; /* Un blanco suave para el texto */
+    --primary-color: #007bff; /* Un azul vibrante para elementos importantes */
+    --primary-hover-color: #0056b3; /* Azul más oscuro para el efecto hover */
+    --border-color: #333; /* Color para bordes sutiles */
+    --input-bg-color: #2a2a2a; /* Fondo para campos de texto y selectores */
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Cuando la clase 'light' está en el HTML, se aplican estas variables */
+html.light {
+    --bg-color: #f4f6f8;
+    --surface-bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --primary-color: #007bff;
+    --primary-hover-color: #0056b3;
+    --border-color: #ddd;
+    --input-bg-color: #f0f0f0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ------------------- */
+/*  2. Estilos Globales
+/* ------------------- */
+
+* {
+    box-sizing: border-box; /* Asegura que el padding y borde no añadan tamaño extra */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s; /* Transición suave al cambiar de tema */
+}
+
+main {
+    max-width: 900px;
+    margin: 20px auto; /* Centra el contenido principal */
+    padding: 0 20px;
+}
+
+/* ------------------- */
+/*  3. Cabecera y Selector de Tema
+/* ------------------- */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--surface-bg-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.theme-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el texto y el interruptor */
+}
+
+/* ------------------- */
+/*  4. Controles Principales (Botones y Selección de Archivo)
+/* ------------------- */
+
+.controls, .actions {
+    background-color: var(--surface-bg-color);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea en pantallas pequeñas */
+    gap: 15px; /* Espacio entre los elementos */
+    align-items: center;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: var(--primary-hover-color);
+}
+
+#clear-btn {
+    background-color: #dc3545; /* Un color rojo para indicar una acción de limpieza/borrado */
+}
+
+#clear-btn:hover {
+    background-color: #c82333;
+}
+
+/* Estilo para el input de archivo para que parezca un botón */
+input[type="file"] {
+    color: transparent;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #6c757d; /* Gris para acciones secundarias */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #5a6268;
+}
+
+/* ------------------- */
+/*  5. Opciones de Acción (Selector e Instrucción)
+/* ------------------- */
+
+.actions {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+select, textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+select {
+    cursor: pointer;
+}
+
+#custom-instruction {
+    resize: vertical; /* Permite al usuario cambiar la altura del textarea */
+    min-height: 80px;
+}
+
+/* ------------------- */
+/*  6. Contenedor de Resultados
+/* ------------------- */
+
+#results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Malla responsiva */
+    gap: 20px;
+}
+
+.result-item {
+    background-color: var(--surface-bg-color);
+    border-radius: 8px;
+    overflow: hidden; /* Asegura que la imagen no se salga del borde redondeado */
+    box-shadow: 0 2px 5px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.result-item img {
+    width: 100%;
+    height: 200px; /* Altura fija para las imágenes */
+    object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+    display: block;
+}
+
+.text-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.text-content textarea {
+    height: 150px;
+    resize: none; /* El usuario no podrá cambiar el tamaño del textarea de resultado */
+}
+
+.copy-btn {
+    width: 100%;
+    background-color: #28a745; /* Verde para indicar una acción de éxito/copiado */
+}
+
+.copy-btn:hover {
+    background-color: #218838;
+}
+
+/* ------------------- */
+/*  7. Media Queries (Diseño para Móviles)
+/* ------------------- */
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch; /* Los botones ocuparán todo el ancho */
+    }
+    
+    #results-container {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+    }
+}

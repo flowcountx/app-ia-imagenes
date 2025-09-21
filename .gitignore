@@ -1,0 +1,13 @@
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración del editor de código
+.vscode/
+.idea/
+
+# Archivos de dependencias (buena práctica tenerlo aunque no se use ahora)
+node_modules/
+
+# Archivos con variables de entorno (para información sensible)
+.env
