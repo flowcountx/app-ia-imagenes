@@ -8,14 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('drop-zone');
     const fileList = document.getElementById('file-list');
 
-    // La variable 'OCR_API_KEY' es cargada desde el archivo 'config.js' (localmente)
-    // o creada por el Build Command en Vercel. Esto mantiene nuestro código seguro.
+    let imageFiles = [];
 
     // --- FUNCIONES AYUDANTES ---
 
     /**
      * Redimensiona una imagen en el navegador si excede un ancho máximo para optimizarla.
-     * Previene errores de red con archivos grandes y acelera el procesamiento.
      * @param {File} file - El archivo de imagen original.
      * @param {number} maxWidth - El ancho máximo permitido en píxeles.
      * @returns {Promise<File>} Una promesa que se resuelve con el nuevo archivo optimizado.
@@ -49,6 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             reader.onerror = reject;
         });
+    };
+
+    /**
+     * Reformatea el texto crudo del OCR para hacerlo más legible, como texto de una página web.
+     * @param {string} rawText - El texto extraído directamente de la API de OCR.
+     * @returns {string} El texto limpio y reformateado.
+     */
+    const reformatOcrText = (rawText) => {
+        if (!rawText) return '';
+        // Une palabras separadas por guión al final de la línea (ej: "palab-\nra" -> "palabra")
+        let cleanedText = rawText.replace(/-\n/g, '');
+        // Reemplaza saltos de línea que no son de párrafo con un espacio
+        cleanedText = cleanedText.replace(/\n(?!\n)/g, ' ');
+        // Limpia espacios en blanco al inicio o final
+        return cleanedText.trim();
     };
 
     // --- LÓGICA DE LA INTERFAZ DE USUARIO (UI) ---
@@ -88,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         if (typeof OCR_API_KEY === 'undefined' || OCR_API_KEY.includes('TU_CLAVE')) {
-            alert('Error de configuración: La clave de la API no está definida. Asegúrate de crear el archivo config.js localmente y configurar las variables de entorno en Vercel.');
+            alert('Error de configuración: La clave de la API no está definida.');
             return;
         }
 
@@ -100,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const file = await resizeImage(originalFile);
                 const formData = new FormData();
                 formData.append('file', file);
-                formData.append('apikey', OCR_API_KEY); // Usa la variable segura
+                formData.append('apikey', OCR_API_KEY);
                 formData.append('language', 'spa');
 
                 const response = await fetch('https://api.ocr.space/parse/image', {
@@ -109,12 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await response.json();
 
-                let resultText = '';
+                let rawText = '';
                 if (data.IsErroredOnProcessing) {
                     throw new Error(data.ErrorMessage.join(' '));
                 } else {
-                    resultText = data.ParsedResults[0]?.ParsedText || '';
+                    rawText = data.ParsedResults[0]?.ParsedText || '';
                 }
+
+                // Limpiamos el texto crudo con nuestra función de reformateo
+                const resultText = reformatOcrText(rawText);
 
                 const imageURL = URL.createObjectURL(originalFile);
                 resultsHTML += `
