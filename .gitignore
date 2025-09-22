@@ -11,3 +11,5 @@ node_modules/
 
 # Archivos con variables de entorno (para información sensible)
 .env
+# Archivos de configuración con secretos
+config.js

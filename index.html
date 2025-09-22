@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistente de Imágenes con IA</title>
+    <!-- El título ahora refleja la única función de la app -->
+    <title>Extractor de Texto de Imágenes (OCR)</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
     <header>
-        <h1>Asistente de Imágenes con IA</h1>
+        <h1>Extractor de Texto de Imágenes (OCR)</h1>
         <div class="theme-switcher">
             <label for="theme-toggle">Modo Claro</label>
             <input type="checkbox" id="theme-toggle">
@@ -17,34 +17,22 @@
     </header>
 
     <main>
-        <!-- NUEVA ZONA DE ARRASTRAR Y SOLTAR -->
         <div id="drop-zone">
             <p>Arrastra y suelta tus imágenes aquí o</p>
             <label for="image-input" class="file-label">Selecciona archivos</label>
             <input type="file" id="image-input" accept="image/*" multiple hidden>
         </div>
 
-        <!-- NUEVO CONTENEDOR PARA LA LISTA DE ARCHIVOS -->
         <div id="file-list-container">
             <h3>Imágenes Cargadas:</h3>
             <ul id="file-list">
-                <!-- Los nombres de los archivos aparecerán aquí -->
+                <!-- Los nombres de los archivos aparecerán aquí dinámicamente -->
             </ul>
         </div>
-
-        <div class="actions">
-            <select id="action-select">
-                <option value="ocr">1. Reconocer Texto (OCR)</option>
-                <option value="describe">2. Describir Imagen</option>
-                <option value="custom">3. Instrucción Personalizada</option>
-            </select>
-            <!-- El textarea para la instrucción ahora estará oculto por defecto -->
-            <textarea id="custom-instruction" placeholder="Escribe tu instrucción aquí (ej: resume el texto, traduce al inglés, etc.)"></textarea>
-        </div>
         
+        <!-- Controles simplificados -->
         <div class="controls">
-             <!-- Movimos los botones aquí para un mejor flujo -->
-            <button id="process-btn">Procesar Imágenes</button>
+            <button id="process-btn">Extraer Texto</button>
             <button id="clear-btn">Limpiar Todo</button>
         </div>
 
@@ -53,6 +41,11 @@
         </div>
     </main>
 
+    <!--
+      IMPORTANTE: Se carga primero 'config.js' para que la variable OCR_API_KEY
+      esté disponible cuando 'app.js' la necesite.
+    -->
+    <script src="config.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
