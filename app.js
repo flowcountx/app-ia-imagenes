@@ -13,6 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Variable global para almacenar los archivos de imagen seleccionados
     let imageFiles = [];
 
+    /**
+     * Toma un objeto File y lo convierte a una cadena de texto base64 (Data URL).
+     * @param {File} file - El archivo a convertir.
+     * @returns {Promise<string>} Una promesa que se resuelve con la Data URL.
+     */
+    const convertFileToDataURL = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    };
+
     // --- Lógica para el cambio de tema (oscuro/claro) ---
     themeToggle.addEventListener('change', () => {
         document.documentElement.classList.toggle('light');
@@ -21,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Función para actualizar la lista visual de archivos cargados ---
     const updateFileList = () => {
-        fileList.innerHTML = ''; // Limpiamos la lista para no duplicar nombres
+        fileList.innerHTML = '';
         if (imageFiles.length === 0) {
             const li = document.createElement('li');
             li.textContent = 'Ninguna imagen seleccionada.';
@@ -29,13 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             imageFiles.forEach(file => {
                 const li = document.createElement('li');
-                li.textContent = file.name; // Mostramos el nombre de cada archivo
+                li.textContent = file.name;
                 fileList.appendChild(li);
             });
         }
     };
 
-    // --- Función centralizada para manejar los archivos (ya sea por clic o arrastre) ---
+    // --- Función centralizada para manejar los archivos ---
     const handleFiles = (files) => {
         imageFiles = Array.from(files);
         updateFileList();
@@ -46,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica completa para Arrastrar y Soltar (Drag and Drop) ---
     dropZone.addEventListener('dragover', (event) => {
-        event.preventDefault(); // Previene el comportamiento por defecto del navegador
+        event.preventDefault();
         dropZone.classList.add('drag-over');
     });
 
@@ -57,14 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
     dropZone.addEventListener('drop', (event) => {
         event.preventDefault();
         dropZone.classList.remove('drag-over');
-        handleFiles(event.dataTransfer.files); // Usamos los archivos del evento 'drop'
+        handleFiles(event.dataTransfer.files);
     });
 
     // --- Lógica para mostrar/ocultar el campo de instrucción personalizada ---
     actionSelect.addEventListener('change', () => {
         customInstruction.style.display = (actionSelect.value === 'custom') ? 'block' : 'none';
     });
-    // Se ejecuta una vez al cargar la página para asegurar el estado inicial correcto
     actionSelect.dispatchEvent(new Event('change'));
 
     // --- Lógica principal de Procesamiento de imágenes ---
@@ -83,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 if (action === 'ocr') {
-                    resultText = await puter.ai.img2txt(file);
+                    const fileAsDataURL = await convertFileToDataURL(file);
+                    resultText = await puter.ai.img2txt(fileAsDataURL);
                 } else if (action === 'describe') {
                     const response = await puter.ai.chat({
                         messages: [
@@ -96,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const instruction = customInstruction.value;
                     if (!instruction) {
                         alert('Por favor, escribe una instrucción para la opción personalizada.');
-                        continue; // Salta a la siguiente imagen si no hay instrucción
+                        continue;
                     }
                     const response = await puter.ai.chat({
                         messages: [
@@ -107,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultText = response.message.content;
                 }
 
-                // Genera el HTML para un resultado exitoso
                 const imageURL = URL.createObjectURL(file);
                 resultsHTML += `
                     <div class="result-item">
@@ -120,22 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             } catch (error) {
                 console.error('Error procesando la imagen:', error);
-                
-                // --- MANEJO DE ERRORES AVANZADO Y CORREGIDO ---
                 let errorMessage = "Ocurrió un error desconocido.";
-
                 if (error && error.error && typeof error.error.message === 'string') {
-                    // Captura el error específico de la API de Puter: {success: false, error: {message: "..."}}
                     errorMessage = error.error.message;
                 } else if (error && typeof error.message === 'string') {
-                    // Captura un error estándar de JavaScript
                     errorMessage = error.message;
                 } else {
-                    // Si el error es un objeto pero no tiene el formato esperado, lo muestra como texto
                     errorMessage = JSON.stringify(error);
                 }
-
-                // Genera el HTML para un resultado con error
                 resultsHTML += `
                     <div class="result-item error">
                         <p>Error al procesar ${file.name}</p>
@@ -149,9 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica para el botón de Limpiar Todo ---
     clearBtn.addEventListener('click', () => {
         imageFiles = [];
-        imageInput.value = ''; // Resetea el input de archivo
+        imageInput.value = '';
         resultsContainer.innerHTML = '';
-        updateFileList(); // Actualiza la lista para mostrar que está vacía
+        updateFileList();
     });
 
     // --- Lógica para el botón de Copiar Texto ---
@@ -159,14 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('copy-btn')) {
             const textToCopy = event.target.dataset.text;
             navigator.clipboard.writeText(textToCopy).then(() => {
-                event.target.textContent = '¡Copiado!'; // Feedback visual
+                event.target.textContent = '¡Copiado!';
                 setTimeout(() => {
-                    event.target.textContent = 'Copiar'; // Vuelve al estado original
+                    event.target.textContent = 'Copiar';
                 }, 2000);
             }).catch(err => console.error('Error al copiar:', err));
         }
     });
 
-    // --- Llamada inicial para establecer el estado de la UI al cargar ---
     updateFileList();
 });
